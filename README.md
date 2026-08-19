@@ -12,6 +12,20 @@ Proyecto Kotlin Multiplatform para Android e iOS, adaptado a la estructura desar
 - Caso de uso para observar productos sin acoplar la UI al repositorio.
 - Seis pruebas del dominio compartido en `commonTest`.
 
+## Actividad autónoma
+
+Se añadió el procesamiento reactivo de pedidos e inventario como ampliación autónoma de la sesión:
+
+- validación de existencia y disponibilidad de productos;
+- suma de cantidades repetidas antes de descontar stock;
+- resultados de negocio exhaustivos mediante `sealed class`;
+- actualización inmutable y segura del inventario con `Mutex`;
+- observación del inventario mediante `StateFlow`;
+- seis pruebas adicionales de reglas de negocio y flujo reactivo.
+
+La explicación, las reglas y los casos comprobados están en
+[ACTIVIDAD_AUTONOMA.md](./ACTIVIDAD_AUTONOMA.md).
+
 ## Estructura original del proyecto
 
 * [/iosApp](./iosApp/iosApp) contains an iOS application. Even if you’re sharing your UI with Compose Multiplatform,
