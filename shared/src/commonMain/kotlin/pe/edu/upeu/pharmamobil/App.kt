@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.painterResource
+import pe.edu.upeu.pharmamobil.presentation.cliente.ClienteScreen
 import pe.edu.upeu.pharmamobil.presentation.producto.ProductoScreen
 
 import pharmamobil.shared.generated.resources.Res
@@ -22,5 +23,5 @@ import pharmamobil.shared.generated.resources.compose_multiplatform
 
 @Composable
 fun App() {
-    ProductoScreen()
+    ClienteScreen()
 }
