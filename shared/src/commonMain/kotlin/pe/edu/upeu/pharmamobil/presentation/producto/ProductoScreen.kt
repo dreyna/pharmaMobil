@@ -30,6 +30,44 @@ fun ProductoScreen() {
         mutableStateOf("")
     }
 
+    var nombreError by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var precioError by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var stockError by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    var mensajeExito by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    fun validar(): Boolean {
+        nombreError = if (nombre.isBlank()) "El nombre es obligatorio" else null
+
+        val precioValor = precio.toDoubleOrNull()
+        precioError = when {
+            precio.isBlank() -> "El precio es obligatorio"
+            precioValor == null -> "El precio debe ser un número válido"
+            precioValor <= 0 -> "El precio debe ser mayor a 0"
+            else -> null
+        }
+
+        val stockValor = stock.toIntOrNull()
+        stockError = when {
+            stock.isBlank() -> "El stock es obligatorio"
+            stockValor == null -> "El stock debe ser un número entero"
+            stockValor < 0 -> "El stock no puede ser negativo"
+            else -> null
+        }
+
+        return nombreError == null && precioError == null && stockError == null
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -46,6 +84,10 @@ fun ProductoScreen() {
             label = {
                 Text("Nombre")
             },
+            isError = nombreError != null,
+            supportingText = {
+                nombreError?.let { Text(it) }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -54,6 +96,10 @@ fun ProductoScreen() {
             onValueChange = { precio = it },
             label = {
                 Text("Precio")
+            },
+            isError = precioError != null,
+            supportingText = {
+                precioError?.let { Text(it) }
             },
             modifier = Modifier.fillMaxWidth()
         )
@@ -64,18 +110,30 @@ fun ProductoScreen() {
             label = {
                 Text("Stock")
             },
+            isError = stockError != null,
+            supportingText = {
+                stockError?.let { Text(it) }
+            },
             modifier = Modifier.fillMaxWidth()
         )
 
         Button(
             onClick = {
-                println(
-                    "Nombre=$nombre, Precio=$precio, Stock=$stock"
-                )
+                mensajeExito = null
+                if (validar()) {
+                    mensajeExito = "Producto \"$nombre\" registrado correctamente"
+                    nombre = ""
+                    precio = ""
+                    stock = ""
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrar")
+        }
+
+        mensajeExito?.let {
+            Text(it)
         }
     }
 }
