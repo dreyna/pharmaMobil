@@ -63,3 +63,8 @@ kotlin {
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
 }
+tasks.withType<Test>().configureEach {
+    testLogging {
+        showStandardStreams = true
+    }
+}
