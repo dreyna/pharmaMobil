@@ -17,3 +17,19 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
+
+# Secrets and signing material
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pfx
+keystore.properties
+secrets.properties
+google-services.json
+
+# Generated reports and logs
+*.log
+reports/

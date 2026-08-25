@@ -2,6 +2,22 @@
 
 Proyecto Kotlin Multiplatform para Android e iOS, adaptado a la estructura desarrollada en clase.
 
+## Sesión 3 - Registro de productos con Compose
+
+La pantalla principal implementa la actividad práctica de la guía:
+
+- `ProductoScreen()` en el paquete `presentation.producto`;
+- campos Nombre, Precio y Stock mediante `OutlinedTextField`;
+- estados locales con `remember` y `mutableStateOf`;
+- botón Registrar y mensaje de resultado;
+- validación de nombre obligatorio, precio numérico mayor que cero y stock entero no negativo;
+- creación de `Producto(id = 1L, nombre, precio, stock)` cuando los datos son válidos;
+- cuatro pruebas automatizadas que cubren exactamente los casos de la guía.
+
+Las capturas de la estructura, la pantalla, las validaciones y el registro correcto se encuentran en
+[`evidencias/sesion3`](./evidencias/sesion3). Las respuestas de reflexión están en
+[`RESPUESTAS_REFLEXION_SESION_3.md`](./RESPUESTAS_REFLEXION_SESION_3.md).
+
 ## Actividad implementada
 
 - `Cliente` con null-safety y `obtenerTelefono()` usando el operador Elvis.
@@ -60,6 +76,10 @@ En Windows, valida toda la actividad compartida con:
 .\gradlew.bat :shared:testAndroidHostTest
 .\gradlew.bat :androidApp:assembleDebug
 ```
+
+El APK de depuración se genera en:
+
+`androidApp/build/outputs/apk/debug/androidApp-debug.apk`
 
 ---
 
