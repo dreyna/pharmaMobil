@@ -10,12 +10,15 @@ La pantalla principal implementa la actividad práctica de la guía:
 - campos Nombre, Precio y Stock mediante `OutlinedTextField`;
 - estados locales con `remember` y `mutableStateOf`;
 - botón Registrar y mensaje de resultado;
-- validación de nombre obligatorio, precio numérico mayor que cero y stock entero no negativo;
+- validación secuencial de nombre, conversión y rango de precio, y conversión y rango de stock;
 - creación de `Producto(id = 1L, nombre, precio, stock)` cuando los datos son válidos;
-- cuatro pruebas automatizadas que cubren exactamente los casos de la guía.
+- retroalimentación visual con `isError` y mensajes junto a cada campo;
+- limpieza automática del formulario después de un registro correcto;
+- siete pruebas automatizadas que cubren exactamente los casos de la guía.
 
-Las capturas de la estructura, la pantalla, las validaciones y el registro correcto se encuentran en
-[`evidencias/sesion3`](./evidencias/sesion3). Las respuestas de reflexión están en
+La entrega de la actividad autónoma está documentada en
+[`ACTIVIDAD_AUTONOMA_SESION_3.md`](./ACTIVIDAD_AUTONOMA_SESION_3.md). Sus cinco capturas obligatorias se encuentran en
+[`evidencias/actividad-autonoma-sesion3`](./evidencias/actividad-autonoma-sesion3). Las respuestas de reflexión están en
 [`RESPUESTAS_REFLEXION_SESION_3.md`](./RESPUESTAS_REFLEXION_SESION_3.md).
 
 ## Actividad implementada

@@ -26,22 +26,53 @@ class ProductoScreenTest {
         val resultado = validarProductoRegistro("", "8.50", "100")
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
+        assertEquals(CampoProducto.NOMBRE, error.campo)
         assertEquals("El nombre es obligatorio.", error.mensaje)
     }
 
     @Test
     fun rechazaElPrecioConTexto() {
-        val resultado = validarProductoRegistro("Paracetamol", "abc", "100")
+        val resultado = validarProductoRegistro("Ibuprofeno", "abc", "50")
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
-        assertEquals("El precio debe ser numérico y mayor que cero.", error.mensaje)
+        assertEquals(CampoProducto.PRECIO, error.campo)
+        assertEquals("Ingrese un precio numérico.", error.mensaje)
+    }
+
+    @Test
+    fun rechazaElPrecioIgualACero() {
+        val resultado = validarProductoRegistro("Ibuprofeno", "0", "50")
+
+        val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
+        assertEquals(CampoProducto.PRECIO, error.campo)
+        assertEquals("El precio debe ser mayor que cero.", error.mensaje)
+    }
+
+    @Test
+    fun rechazaElStockConTexto() {
+        val resultado = validarProductoRegistro("Amoxicilina", "18.50", "abc")
+
+        val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
+        assertEquals(CampoProducto.STOCK, error.campo)
+        assertEquals("Ingrese un stock entero.", error.mensaje)
     }
 
     @Test
     fun rechazaElStockNegativo() {
-        val resultado = validarProductoRegistro("Paracetamol", "8.50", "-5")
+        val resultado = validarProductoRegistro("Amoxicilina", "18.50", "-5")
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
-        assertEquals("El stock debe ser un entero mayor o igual a cero.", error.mensaje)
+        assertEquals(CampoProducto.STOCK, error.campo)
+        assertEquals("El stock no puede ser negativo.", error.mensaje)
+    }
+
+    @Test
+    fun permiteStockIgualACero() {
+        val resultado = validarProductoRegistro("Loratadina", "10", "0")
+
+        val exito = assertIs<ResultadoRegistroProducto.Exito>(resultado)
+        assertEquals("Loratadina", exito.producto.nombre)
+        assertEquals(10.0, exito.producto.precio)
+        assertEquals(0, exito.producto.stock)
     }
 }

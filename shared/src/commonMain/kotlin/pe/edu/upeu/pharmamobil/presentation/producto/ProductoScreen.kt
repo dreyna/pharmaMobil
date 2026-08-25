@@ -29,12 +29,23 @@ import pe.edu.upeu.pharmamobil.domain.model.Producto
 
 private const val MENSAJE_REGISTRO_EXITOSO = "Producto registrado correctamente."
 private const val ERROR_NOMBRE = "El nombre es obligatorio."
-private const val ERROR_PRECIO = "El precio debe ser numérico y mayor que cero."
-private const val ERROR_STOCK = "El stock debe ser un entero mayor o igual a cero."
+private const val ERROR_PRECIO_NUMERICO = "Ingrese un precio numérico."
+private const val ERROR_PRECIO_POSITIVO = "El precio debe ser mayor que cero."
+private const val ERROR_STOCK_ENTERO = "Ingrese un stock entero."
+private const val ERROR_STOCK_NEGATIVO = "El stock no puede ser negativo."
+
+internal enum class CampoProducto {
+    NOMBRE,
+    PRECIO,
+    STOCK,
+}
 
 internal sealed interface ResultadoRegistroProducto {
     data class Exito(val producto: Producto) : ResultadoRegistroProducto
-    data class Error(val mensaje: String) : ResultadoRegistroProducto
+    data class Error(
+        val campo: CampoProducto,
+        val mensaje: String,
+    ) : ResultadoRegistroProducto
 }
 
 internal fun validarProductoRegistro(
@@ -42,18 +53,41 @@ internal fun validarProductoRegistro(
     precio: String,
     stock: String,
 ): ResultadoRegistroProducto {
-    if (nombre.isBlank()) {
-        return ResultadoRegistroProducto.Error(ERROR_NOMBRE)
-    }
-
     val precioNumerico = precio.toDoubleOrNull()
-    if (precioNumerico == null || precioNumerico <= 0.0) {
-        return ResultadoRegistroProducto.Error(ERROR_PRECIO)
-    }
-
     val stockNumerico = stock.toIntOrNull()
-    if (stockNumerico == null || stockNumerico < 0) {
-        return ResultadoRegistroProducto.Error(ERROR_STOCK)
+
+    when {
+        nombre.isBlank() -> {
+            return ResultadoRegistroProducto.Error(CampoProducto.NOMBRE, ERROR_NOMBRE)
+        }
+
+        precioNumerico == null -> {
+            return ResultadoRegistroProducto.Error(
+                CampoProducto.PRECIO,
+                ERROR_PRECIO_NUMERICO,
+            )
+        }
+
+        precioNumerico <= 0.0 -> {
+            return ResultadoRegistroProducto.Error(
+                CampoProducto.PRECIO,
+                ERROR_PRECIO_POSITIVO,
+            )
+        }
+
+        stockNumerico == null -> {
+            return ResultadoRegistroProducto.Error(
+                CampoProducto.STOCK,
+                ERROR_STOCK_ENTERO,
+            )
+        }
+
+        stockNumerico < 0 -> {
+            return ResultadoRegistroProducto.Error(
+                CampoProducto.STOCK,
+                ERROR_STOCK_NEGATIVO,
+            )
+        }
     }
 
     return ResultadoRegistroProducto.Exito(
@@ -74,6 +108,36 @@ fun ProductoScreen() {
     var mensaje by remember { mutableStateOf("") }
     var productoRegistrado by remember { mutableStateOf<Producto?>(null) }
     var registroExitoso by remember { mutableStateOf(false) }
+    var intentoRegistrar by remember { mutableStateOf(false) }
+
+    val errorActual = if (intentoRegistrar) {
+        validarProductoRegistro(nombre, precio, stock) as? ResultadoRegistroProducto.Error
+    } else {
+        null
+    }
+
+    fun actualizarRetroalimentacion(
+        nuevoNombre: String = nombre,
+        nuevoPrecio: String = precio,
+        nuevoStock: String = stock,
+    ) {
+        mensaje = if (intentoRegistrar) {
+            when (
+                val resultado = validarProductoRegistro(
+                    nuevoNombre,
+                    nuevoPrecio,
+                    nuevoStock,
+                )
+            ) {
+                is ResultadoRegistroProducto.Error -> resultado.mensaje
+                is ResultadoRegistroProducto.Exito -> ""
+            }
+        } else {
+            ""
+        }
+        productoRegistrado = null
+        registroExitoso = false
+    }
 
     Column(
         modifier = Modifier
@@ -105,11 +169,16 @@ fun ProductoScreen() {
             value = nombre,
             onValueChange = {
                 nombre = it
-                mensaje = ""
-                productoRegistrado = null
+                actualizarRetroalimentacion(nuevoNombre = it)
             },
             label = { Text("Nombre") },
             placeholder = { Text("Ej. Paracetamol 500 mg") },
+            isError = errorActual?.campo == CampoProducto.NOMBRE,
+            supportingText = if (errorActual?.campo == CampoProducto.NOMBRE) {
+                { Text(errorActual.mensaje) }
+            } else {
+                null
+            },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -118,12 +187,17 @@ fun ProductoScreen() {
             value = precio,
             onValueChange = {
                 precio = it
-                mensaje = ""
-                productoRegistrado = null
+                actualizarRetroalimentacion(nuevoPrecio = it)
             },
             label = { Text("Precio") },
             placeholder = { Text("Ej. 8.50") },
             prefix = { Text("S/ ") },
+            isError = errorActual?.campo == CampoProducto.PRECIO,
+            supportingText = if (errorActual?.campo == CampoProducto.PRECIO) {
+                { Text(errorActual.mensaje) }
+            } else {
+                null
+            },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             modifier = Modifier.fillMaxWidth(),
@@ -133,11 +207,16 @@ fun ProductoScreen() {
             value = stock,
             onValueChange = {
                 stock = it
-                mensaje = ""
-                productoRegistrado = null
+                actualizarRetroalimentacion(nuevoStock = it)
             },
             label = { Text("Stock") },
             placeholder = { Text("Ej. 100") },
+            isError = errorActual?.campo == CampoProducto.STOCK,
+            supportingText = if (errorActual?.campo == CampoProducto.STOCK) {
+                { Text(errorActual.mensaje) }
+            } else {
+                null
+            },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth(),
@@ -145,6 +224,7 @@ fun ProductoScreen() {
 
         Button(
             onClick = {
+                intentoRegistrar = true
                 when (val resultado = validarProductoRegistro(nombre, precio, stock)) {
                     is ResultadoRegistroProducto.Error -> {
                         mensaje = resultado.mensaje
@@ -156,6 +236,10 @@ fun ProductoScreen() {
                         mensaje = MENSAJE_REGISTRO_EXITOSO
                         productoRegistrado = resultado.producto
                         registroExitoso = true
+                        nombre = ""
+                        precio = ""
+                        stock = ""
+                        intentoRegistrar = false
                     }
                 }
             },

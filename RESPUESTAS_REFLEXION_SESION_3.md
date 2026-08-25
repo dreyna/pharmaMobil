@@ -1,21 +1,21 @@
-# Preguntas de reflexión - Sesión 3
+# Preguntas de reflexión - Actividad autónoma sesión 3
 
-## 1. ¿Por qué Compose utiliza programación declarativa?
+## 1. ¿Por qué precio y stock se mantienen inicialmente como `String`?
 
-Porque la interfaz se describe en función del estado actual. En lugar de indicar paso a paso cómo modificar cada control, se declara cómo debe verse la pantalla y Compose vuelve a dibujar únicamente lo necesario cuando cambian los datos.
+Porque `OutlinedTextField` recibe y entrega texto mientras la persona escribe. Mantener ambos valores como `String` permite representar estados intermedios válidos de la edición, como un campo vacío o un punto decimal, sin provocar excepciones. La conversión al tipo numérico se realiza únicamente al validar.
 
-## 2. ¿Qué función cumplen `remember` y `mutableStateOf`?
+## 2. ¿Qué ventaja ofrecen `toDoubleOrNull()` y `toIntOrNull()` frente a las conversiones directas?
 
-`mutableStateOf` crea un estado observable. `remember` conserva ese estado entre recomposiciones mientras el componente permanece en la composición. En `ProductoScreen` se usan para mantener el nombre, el precio, el stock y el mensaje que ve el usuario.
+Devuelven `null` cuando el texto no puede convertirse y evitan que la aplicación se cierre por una excepción. Así la pantalla puede detectar el problema y mostrar un mensaje claro. En cambio, `toDouble()` y `toInt()` lanzan una excepción si reciben datos como `abc`.
 
-## 3. ¿Cómo se actualiza una interfaz cuando cambia el estado?
+## 3. ¿Qué relación existe entre el cambio de estado y la recomposición?
 
-Al asignar un nuevo valor a un estado observable, Compose identifica los componentes que lo leen y los recompone. Por ejemplo, cuando cambia `mensaje`, la pantalla muestra inmediatamente la confirmación o el error correspondiente.
+Los valores creados con `mutableStateOf` son observables. Cuando cambia `nombre`, `precio`, `stock`, `mensaje` o `intentoRegistrar`, Compose vuelve a ejecutar los componentes que leen ese estado y actualiza solo la parte necesaria de la interfaz. Por eso los errores aparecen inmediatamente después del intento de registro y desaparecen o cambian al corregir los campos.
 
-## 4. ¿Por qué deben validarse los datos antes de crear un objeto `Producto`?
+## 4. ¿Por qué se construye `Producto` únicamente después de validar?
 
-La validación evita que el dominio reciba información incompleta o inválida. Así se impide registrar productos sin nombre, precios no numéricos o menores o iguales a cero, y cantidades de stock negativas o que no sean enteras.
+Porque el objeto representa datos coherentes del dominio. Crearlo después de validar garantiza que el nombre no esté vacío, que el precio sea numérico y positivo, y que el stock sea un entero no negativo. De esta forma ningún producto inválido llega al inventario.
 
-## 5. ¿Cómo podría mejorarse la solución aplicando MVVM?
+## 5. ¿Qué parte de la lógica se trasladará próximamente a un ViewModel?
 
-Se podría mover el estado y la validación a un `ProductoViewModel`. La pantalla solo observaría un `ProductoUiState` y enviaría eventos, mientras el ViewModel ejecutaría la lógica de registro. Esto facilitaría las pruebas, conservaría el estado ante cambios de configuración y separaría la interfaz de la lógica de negocio.
+El estado del formulario, las reglas de validación, el mensaje de retroalimentación y la acción de registro pasarán a un `ProductoViewModel`. `ProductoScreen` se limitará a mostrar un `ProductoUiState` y a enviar eventos, separando la lógica de presentación de los componentes visuales.
