@@ -1,27 +1,55 @@
 package pe.edu.upeu.pharmamobil
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
+import pe.edu.upeu.pharmamobil.data.ProductoRepository
 import pe.edu.upeu.pharmamobil.presentation.cliente.ClienteScreen
 import pe.edu.upeu.pharmamobil.presentation.producto.ProductoScreen
 
-import pharmamobil.shared.generated.resources.Res
-import pharmamobil.shared.generated.resources.compose_multiplatform
+private val TITULOS = listOf("Clientes", "Productos")
 
 @Composable
 fun App() {
-    ClienteScreen()
+    MaterialTheme {
+
+        val productoRepository = remember { ProductoRepository() }
+
+        var tabSeleccionado by rememberSaveable { mutableStateOf(0) }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeContentPadding()
+        ) {
+
+            PrimaryTabRow(selectedTabIndex = tabSeleccionado) {
+                TITULOS.forEachIndexed { indice, titulo ->
+                    Tab(
+                        selected = tabSeleccionado == indice,
+                        onClick = { tabSeleccionado = indice },
+                        text = { Text(titulo) }
+                    )
+                }
+            }
+
+            when (tabSeleccionado) {
+                0 -> ClienteScreen()
+                else -> ProductoScreen(
+                    onRegistrar = { productoRepository.registrar(it) }
+                )
+            }
+        }
+    }
 }

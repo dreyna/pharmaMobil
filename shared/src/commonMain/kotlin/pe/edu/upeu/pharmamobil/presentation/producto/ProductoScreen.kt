@@ -14,10 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import pe.edu.upeu.pharmamobil.domain.model.Producto
 import pe.edu.upeu.pharmamobil.presentation.components.ValidatedTextField
 
 @Composable
-fun ProductoScreen() {
+fun ProductoScreen(
+    onRegistrar: (Producto) -> Unit = {}
+) {
 
     var nombre by remember {
         mutableStateOf("")
@@ -47,12 +50,19 @@ fun ProductoScreen() {
         mutableStateOf<String?>(null)
     }
 
-    fun validar(): Boolean {
+    fun validar(): Producto? {
         nombreError = ProductoValidator.validarNombre(nombre)
         precioError = ProductoValidator.validarPrecio(precio)
         stockError = ProductoValidator.validarStock(stock)
 
-        return nombreError == null && precioError == null && stockError == null
+        if (nombreError != null || precioError != null || stockError != null) return null
+
+        return Producto(
+            id = 0L,
+            nombre = nombre.trim(),
+            precio = precio.toDouble(),
+            stock = stock.toInt()
+        )
     }
 
     Column(
@@ -92,8 +102,10 @@ fun ProductoScreen() {
         Button(
             onClick = {
                 mensajeExito = null
-                if (validar()) {
-                    mensajeExito = "Producto \"$nombre\" registrado correctamente"
+                val producto = validar()
+                if (producto != null) {
+                    onRegistrar(producto)
+                    mensajeExito = "Producto \"${producto.nombre}\" registrado correctamente"
                     nombre = ""
                     precio = ""
                     stock = ""
