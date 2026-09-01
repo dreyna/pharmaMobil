@@ -27,7 +27,7 @@ class ProductoScreenTest {
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
         assertEquals(CampoProducto.NOMBRE, error.campo)
-        assertEquals("El nombre es obligatorio.", error.mensaje)
+        assertEquals("Nombre obligatorio", error.mensaje)
     }
 
     @Test
@@ -36,7 +36,7 @@ class ProductoScreenTest {
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
         assertEquals(CampoProducto.PRECIO, error.campo)
-        assertEquals("Ingrese un precio numérico.", error.mensaje)
+        assertEquals("Precio inválido", error.mensaje)
     }
 
     @Test
@@ -45,7 +45,7 @@ class ProductoScreenTest {
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
         assertEquals(CampoProducto.PRECIO, error.campo)
-        assertEquals("El precio debe ser mayor que cero.", error.mensaje)
+        assertEquals("El precio debe ser mayor a 0", error.mensaje)
     }
 
     @Test
@@ -54,7 +54,7 @@ class ProductoScreenTest {
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
         assertEquals(CampoProducto.STOCK, error.campo)
-        assertEquals("Ingrese un stock entero.", error.mensaje)
+        assertEquals("Stock debe ser un número entero", error.mensaje)
     }
 
     @Test
@@ -63,7 +63,7 @@ class ProductoScreenTest {
 
         val error = assertIs<ResultadoRegistroProducto.Error>(resultado)
         assertEquals(CampoProducto.STOCK, error.campo)
-        assertEquals("El stock no puede ser negativo.", error.mensaje)
+        assertEquals("Stock no puede ser negativo", error.mensaje)
     }
 
     @Test

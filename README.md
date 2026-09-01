@@ -2,6 +2,22 @@
 
 Proyecto Kotlin Multiplatform para Android e iOS, adaptado a la estructura desarrollada en clase.
 
+## Sesión 4 - Navegación y estructura visual
+
+La aplicación integra los requisitos del Reto 01 de la Sesión 4:
+
+- cuatro destinos tipados: Inicio, Productos, Clientes y Pedidos;
+- `Scaffold` y `TopAppBar` con título dinámico;
+- `ModalNavigationDrawer` en teléfonos, `NavigationRail` en tablets y
+  `PermanentNavigationDrawer` en pantallas amplias;
+- reutilización directa de `ProductoScreen()` sin duplicar el formulario;
+- conservación del estado escrito al cambiar temporalmente de destino;
+- tema corporativo Material 3 con cambio dinámico entre modo claro y oscuro;
+- mensajes de validación alineados con los ocho casos de la guía;
+- pruebas de los destinos, identificadores y reglas del formulario.
+
+La implementación de la Sesión 4 se encuentra en la rama `sesion-4`.
+
 ## Sesión 3 - Registro de productos con Compose
 
 La pantalla principal implementa la actividad práctica de la guía:

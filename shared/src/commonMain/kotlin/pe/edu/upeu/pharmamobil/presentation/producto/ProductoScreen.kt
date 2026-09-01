@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +29,11 @@ import androidx.compose.ui.unit.dp
 import pe.edu.upeu.pharmamobil.domain.model.Producto
 
 private const val MENSAJE_REGISTRO_EXITOSO = "Producto registrado correctamente."
-private const val ERROR_NOMBRE = "El nombre es obligatorio."
-private const val ERROR_PRECIO_NUMERICO = "Ingrese un precio numérico."
-private const val ERROR_PRECIO_POSITIVO = "El precio debe ser mayor que cero."
-private const val ERROR_STOCK_ENTERO = "Ingrese un stock entero."
-private const val ERROR_STOCK_NEGATIVO = "El stock no puede ser negativo."
+private const val ERROR_NOMBRE = "Nombre obligatorio"
+private const val ERROR_PRECIO_NUMERICO = "Precio inválido"
+private const val ERROR_PRECIO_POSITIVO = "El precio debe ser mayor a 0"
+private const val ERROR_STOCK_ENTERO = "Stock debe ser un número entero"
+private const val ERROR_STOCK_NEGATIVO = "Stock no puede ser negativo"
 
 internal enum class CampoProducto {
     NOMBRE,
@@ -102,13 +103,13 @@ internal fun validarProductoRegistro(
 
 @Composable
 fun ProductoScreen() {
-    var nombre by remember { mutableStateOf("") }
-    var precio by remember { mutableStateOf("") }
-    var stock by remember { mutableStateOf("") }
-    var mensaje by remember { mutableStateOf("") }
+    var nombre by rememberSaveable { mutableStateOf("") }
+    var precio by rememberSaveable { mutableStateOf("") }
+    var stock by rememberSaveable { mutableStateOf("") }
+    var mensaje by rememberSaveable { mutableStateOf("") }
     var productoRegistrado by remember { mutableStateOf<Producto?>(null) }
-    var registroExitoso by remember { mutableStateOf(false) }
-    var intentoRegistrar by remember { mutableStateOf(false) }
+    var registroExitoso by rememberSaveable { mutableStateOf(false) }
+    var intentoRegistrar by rememberSaveable { mutableStateOf(false) }
 
     val errorActual = if (intentoRegistrar) {
         validarProductoRegistro(nombre, precio, stock) as? ResultadoRegistroProducto.Error
