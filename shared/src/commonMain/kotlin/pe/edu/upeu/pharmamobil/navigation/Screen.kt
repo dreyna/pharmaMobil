@@ -11,6 +11,7 @@ sealed class Screen(
     data object Pedidos : Screen("pedidos", "Pedidos", "O")
 
     companion object {
-        val destinos: List<Screen> = listOf(Inicio, Productos, Clientes, Pedidos)
+        val destinos: List<Screen>
+            get() = listOf(Inicio, Productos, Clientes, Pedidos)
     }
 }

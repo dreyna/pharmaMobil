@@ -18,6 +18,11 @@ La aplicación integra los requisitos del Reto 01 de la Sesión 4:
 
 La implementación de la Sesión 4 se encuentra en la rama `sesion-4`.
 
+El procedimiento completo, las pruebas realizadas y las capturas de cada paso están en
+[`documentacion/Documentacion_Sesion_4_PharmaMobil.docx`](./documentacion/Documentacion_Sesion_4_PharmaMobil.docx).
+Las imágenes originales se conservan en
+[`evidencias/sesion4`](./evidencias/sesion4).
+
 ## Sesión 3 - Registro de productos con Compose
 
 La pantalla principal implementa la actividad práctica de la guía:
