@@ -1,7 +1,7 @@
 package pe.edu.upeu.pharmamobil.domain.usecase
 
 import kotlinx.coroutines.test.runTest
-import pe.edu.upeu.pharmamobil.data.repository.ProductoRepositorioEnMemoria
+import pe.edu.upeu.pharmamobil.data.repository.FakeProductoRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -10,11 +10,15 @@ import kotlin.test.assertNull
 /**
  * Las reglas que antes cubria ProductoValidatorTest ahora se verifican aqui,
  * que es donde vive la validacion desde esta sesion.
+ *
+ * Se prueba contra [FakeProductoRepository] y no contra el repositorio en
+ * memoria: una prueba de dominio no debe depender de la capa de datos.
  */
 class RegistrarProductoUseCaseTest {
 
-    private fun nuevoCasoDeUso() =
-        RegistrarProductoUseCase(ProductoRepositorioEnMemoria())
+    private fun nuevoCasoDeUso(
+        repositorio: FakeProductoRepository = FakeProductoRepository()
+    ) = RegistrarProductoUseCase(repositorio)
 
     private suspend fun erroresAlRegistrar(
         nombre: String = "Paracetamol",
@@ -112,5 +116,19 @@ class RegistrarProductoUseCaseTest {
 
         assertEquals(1L, primero.id)
         assertEquals(2L, segundo.id)
+    }
+
+    /** El camino que antes quedaba sin cubrir: el repositorio revienta. */
+    @Test
+    fun devuelveFailureCuandoElRepositorioFalla() = runTest {
+
+        val repositorio = FakeProductoRepository().apply {
+            fallaAlRegistrar = IllegalStateException("Sin conexión")
+        }
+
+        val resultado = nuevoCasoDeUso(repositorio)
+            .invoke("Paracetamol", "12.50", "5")
+
+        assertEquals("Sin conexión", resultado.exceptionOrNull()?.message)
     }
 }

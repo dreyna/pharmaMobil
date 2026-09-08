@@ -2,11 +2,18 @@ package pe.edu.upeu.pharmamobil.domain.model
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
+/**
+ * El "No registrado" del telefono ausente ya no se prueba aqui: era texto de
+ * pantalla dentro de un modelo de dominio y ahora vive en ClienteUi. Lo que
+ * si le corresponde al modelo son sus invariantes.
+ */
 class ClienteTest {
 
     @Test
-    fun probarCliente() {
+    fun aceptaUnClienteConTelefono() {
 
         val cliente = Cliente(
             id = 1L,
@@ -14,16 +21,12 @@ class ClienteTest {
             correo = "ventas@central.pe",
             telefono = "989789123"
         )
-        val resultado = cliente.obtenerTelefono()
 
-        assertEquals(
-            "989789123",
-            resultado
-        )
+        assertEquals("989789123", cliente.telefono)
     }
 
     @Test
-    fun `retorna No registrado cuando el telefono es null`() {
+    fun elTelefonoPuedeFaltar() {
 
         val cliente = Cliente(
             id = 1L,
@@ -31,11 +34,33 @@ class ClienteTest {
             correo = "ventas@central.pe",
             telefono = null
         )
-        val resultado = cliente.obtenerTelefono()
 
-        assertEquals(
-            "No registrado",
-            resultado
-        )
+        assertNull(cliente.telefono)
+    }
+
+    @Test
+    fun noSeConstruyeSinNombre() {
+
+        assertFailsWith<IllegalArgumentException> {
+            Cliente(
+                id = 1L,
+                nombre = "   ",
+                correo = "ventas@central.pe",
+                telefono = null
+            )
+        }
+    }
+
+    @Test
+    fun noSeConstruyeConTelefonoVacio() {
+
+        assertFailsWith<IllegalArgumentException> {
+            Cliente(
+                id = 1L,
+                nombre = "Farmacia Nueva Vida",
+                correo = "ventas@central.pe",
+                telefono = ""
+            )
+        }
     }
 }

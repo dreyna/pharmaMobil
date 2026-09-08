@@ -1,11 +1,5 @@
 package pe.edu.upeu.pharmamobil.presentation.producto
 
-import pe.edu.upeu.pharmamobil.domain.model.Producto
-
-/**
- * Todo lo que la pantalla de Productos necesita para dibujarse, en un solo
- * objeto: la fase del inventario y el contenido del formulario.
- */
 data class ProductoUiState(
     val fase: Fase = Fase.Cargando,
     val formulario: FormularioProducto = FormularioProducto(),
@@ -20,7 +14,7 @@ data class ProductoUiState(
 
         data object SinProductos : Fase
 
-        data class ConProductos(val productos: List<Producto>) : Fase
+        data class ConProductos(val productos: List<ProductoUi>) : Fase
 
         data class Error(val mensaje: String) : Fase
     }

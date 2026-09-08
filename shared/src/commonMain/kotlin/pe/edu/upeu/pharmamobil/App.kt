@@ -38,8 +38,9 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -70,14 +71,24 @@ private val DESTINOS = listOf(
     Destino(Screen.Pedidos, "Pedidos", Icons.Default.ShoppingCart)
 )
 
+
+private val ScreenSaver = Saver<Screen, Int>(
+    save = { pantalla ->
+        DESTINOS.indexOfFirst { it.screen == pantalla }
+    },
+    restore = { indice ->
+        DESTINOS[indice].screen
+    }
+)
+
 @Composable
 fun App() = KoinContext {
 
-    var pantallaActual by remember {
+    var pantallaActual by rememberSaveable(stateSaver = ScreenSaver) {
         mutableStateOf<Screen>(Screen.Inicio)
     }
 
-    var darkTheme by remember {
+    var darkTheme by rememberSaveable {
         mutableStateOf(false)
     }
 
@@ -206,7 +217,9 @@ fun App() = KoinContext {
                             )
 
                         Screen.Clientes ->
-                            ClienteScreen()
+                            ClienteScreen(
+                                viewModel = koinViewModel()
+                            )
 
                         Screen.Pedidos ->
                             EstadoVacio(

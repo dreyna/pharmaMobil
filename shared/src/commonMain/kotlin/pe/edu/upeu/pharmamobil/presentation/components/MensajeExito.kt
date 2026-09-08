@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-/** Confirmacion de una operacion, en lugar de un Text suelto. */
+
 @Composable
 fun MensajeExito(
     texto: String,

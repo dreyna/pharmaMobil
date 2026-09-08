@@ -10,10 +10,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 
-/**
- * Campo de formulario con el mensaje de error debajo. Acepta el tipo de
- * teclado para que el precio y el stock no se escriban con teclado de texto.
- */
+
 @Composable
 fun ValidatedTextField(
     value: String,

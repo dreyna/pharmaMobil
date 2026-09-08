@@ -30,8 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlin.math.roundToLong
-import pe.edu.upeu.pharmamobil.domain.model.Producto
 import pe.edu.upeu.pharmamobil.presentation.components.EstadoVacio
 import pe.edu.upeu.pharmamobil.presentation.components.MensajeExito
 import pe.edu.upeu.pharmamobil.presentation.components.ValidatedTextField
@@ -232,7 +230,7 @@ private fun EncabezadoInventario(
 
 @Composable
 private fun ProductoItem(
-    producto: Producto
+    producto: ProductoUi
 ) {
 
     Card(
@@ -270,7 +268,7 @@ private fun ProductoItem(
                 )
 
                 Text(
-                    text = "${producto.precio.enSoles()}  ·  ${producto.stock} u.",
+                    text = "${producto.precio}  ·  ${producto.stock}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -296,16 +294,4 @@ private fun ProductoItem(
             }
         }
     }
-}
-
-
-/** Kotlin comun no trae String.format, asi que armamos los dos decimales a mano. */
-private fun Double.enSoles(): String {
-
-    val centavos = (this * 100).roundToLong()
-
-    val enteros = centavos / 100
-    val decimales = (centavos % 100).toString().padStart(2, '0')
-
-    return "S/ $enteros.$decimales"
 }

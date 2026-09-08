@@ -7,6 +7,19 @@ data class Producto(
     val stock: Int
 ) {
 
+
+    init {
+        require(nombre.isNotBlank()) {
+            "El nombre del producto no puede estar vacio"
+        }
+        require(precio > 0 && precio.isFinite()) {
+            "El precio debe ser un numero mayor que cero"
+        }
+        require(stock >= 0) {
+            "El stock no puede ser negativo"
+        }
+    }
+
     /**
      * Un producto necesita reposicion cuando su stock cae por debajo del
      * minimo que la botica mantiene en gondola.

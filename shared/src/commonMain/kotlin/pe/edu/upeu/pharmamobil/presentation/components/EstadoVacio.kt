@@ -15,11 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-/**
- * Estado sin contenido: un icono, que pasa y que puede hacer el usuario.
- * Se reutiliza para el inventario vacio, el error de carga y los modulos
- * que todavia no existen.
- */
+
 @Composable
 fun EstadoVacio(
     icono: ImageVector,

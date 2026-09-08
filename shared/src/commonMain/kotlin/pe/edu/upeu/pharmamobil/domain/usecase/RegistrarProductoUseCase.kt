@@ -1,14 +1,9 @@
 package pe.edu.upeu.pharmamobil.domain.usecase
 
-import kotlin.coroutines.cancellation.CancellationException
 import pe.edu.upeu.pharmamobil.domain.model.Producto
 import pe.edu.upeu.pharmamobil.domain.repository.ProductoRepository
 
-/**
- * Motivos por los que el negocio rechaza un producto, campo por campo.
- * Viaja dentro de [ProductoInvalidoException] para que la presentacion pueda
- * senalar cada casillero sin volver a validar nada.
- */
+
 data class ErroresDeProducto(
     val nombre: String? = null,
     val precio: String? = null,
@@ -23,10 +18,7 @@ class ProductoInvalidoException(
     val errores: ErroresDeProducto
 ) : IllegalArgumentException("Los datos del producto no cumplen las reglas del negocio")
 
-/**
- * Registra un producto en el inventario. Concentra las reglas que antes vivian
- * en ProductoValidator: aqui se decide que es un producto valido, no en la UI.
- */
+
 class RegistrarProductoUseCase(
     private val productoRepository: ProductoRepository
 ) {
@@ -47,21 +39,15 @@ class RegistrarProductoUseCase(
             return Result.failure(ProductoInvalidoException(errores))
         }
 
-        return try {
-            Result.success(
-                productoRepository.registrar(
-                    Producto(
-                        id = 0L,
-                        nombre = nombre.trim(),
-                        precio = precio.toDouble(),
-                        stock = stock.toInt()
-                    )
+        return resultadoDe {
+            productoRepository.registrar(
+                Producto(
+                    id = 0L,
+                    nombre = nombre.trim(),
+                    precio = precio.toDouble(),
+                    stock = stock.toInt()
                 )
             )
-        } catch (cancelacion: CancellationException) {
-            throw cancelacion
-        } catch (fallo: Throwable) {
-            Result.failure(fallo)
         }
     }
 
