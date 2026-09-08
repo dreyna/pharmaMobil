@@ -1,29 +1,39 @@
 package pe.edu.upeu.pharmamobil
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocalPharmacy
+import androidx.compose.material.icons.filled.Medication
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Medication
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import org.koin.compose.KoinContext
@@ -40,12 +51,28 @@ import org.koin.compose.viewmodel.koinViewModel
 
 import pe.edu.upeu.pharmamobil.navigation.Screen
 import pe.edu.upeu.pharmamobil.presentation.cliente.ClienteScreen
+import pe.edu.upeu.pharmamobil.presentation.components.EstadoVacio
 import pe.edu.upeu.pharmamobil.presentation.inicio.InicioScreen
 import pe.edu.upeu.pharmamobil.presentation.producto.ProductoScreen
 import pe.edu.upeu.pharmamobil.theme.PharmaMobilTheme
 
+/** Una sola fuente para el menu lateral y el titulo de la barra superior. */
+private data class Destino(
+    val screen: Screen,
+    val titulo: String,
+    val icono: ImageVector
+)
+
+private val DESTINOS = listOf(
+    Destino(Screen.Inicio, "Inicio", Icons.Default.Home),
+    Destino(Screen.Productos, "Productos", Icons.Default.Medication),
+    Destino(Screen.Clientes, "Clientes", Icons.Default.Person),
+    Destino(Screen.Pedidos, "Pedidos", Icons.Default.ShoppingCart)
+)
+
 @Composable
 fun App() = KoinContext {
+
     var pantallaActual by remember {
         mutableStateOf<Screen>(Screen.Inicio)
     }
@@ -74,116 +101,49 @@ fun App() = KoinContext {
 
                     DrawerHeader()
 
-                    NavigationDrawerItem(
-                        label = {
-                            Text("Inicio")
-                        },
-                        selected = pantallaActual is Screen.Inicio,
-                        onClick = {
-
-                            pantallaActual = Screen.Inicio
-
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Home,
-                                contentDescription = "Inicio"
-                            )
-                        }
-                    )
-
-                    NavigationDrawerItem(
-                        label = {
-                            Text("Productos")
-                        },
-                        selected = pantallaActual is Screen.Productos,
-                        onClick = {
-
-                            pantallaActual = Screen.Productos
-
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Medication,
-                                contentDescription = "Productos"
-                            )
-                        }
-                    )
-
-                    NavigationDrawerItem(
-                        label = {
-                            Text("Clientes")
-                        },
-                        selected = pantallaActual is Screen.Clientes,
-                        onClick = {
-
-                            pantallaActual = Screen.Clientes
-
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "Clientes"
-                            )
-                        }
-                    )
-
-                    NavigationDrawerItem(
-                        label = {
-                            Text("Pedidos")
-                        },
-                        selected = pantallaActual is Screen.Pedidos,
-                        onClick = {
-
-                            pantallaActual = Screen.Pedidos
-
-                            scope.launch {
-                                drawerState.close()
-                            }
-                        },
-                        icon = {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = "Pedidos"
-                            )
-                        }
-                    )
+                    HorizontalDivider()
 
                     Spacer(
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.height(12.dp)
                     )
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 16.dp,
-                                vertical = 12.dp
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
+                    DESTINOS.forEach { destino ->
 
-                        Text(
-                            text = "Modo oscuro"
-                        )
+                        NavigationDrawerItem(
+                            label = {
+                                Text(destino.titulo)
+                            },
+                            selected = pantallaActual == destino.screen,
+                            onClick = {
 
-                        Switch(
-                            checked = darkTheme,
-                            onCheckedChange = {
-                                darkTheme = it
-                            }
+                                pantallaActual = destino.screen
+
+                                scope.launch {
+                                    drawerState.close()
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = destino.icono,
+                                    contentDescription = null
+                                )
+                            },
+                            modifier = Modifier.padding(
+                                NavigationDrawerItemDefaults.ItemPadding
+                            )
                         )
                     }
+
+                    Spacer(
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    HorizontalDivider()
+
+                    ModoOscuro(
+                        activo = darkTheme,
+                        onCambiar = { darkTheme = it }
+                    )
                 }
             }
         ) {
@@ -196,9 +156,7 @@ fun App() = KoinContext {
 
                         title = {
                             Text(
-                                text = tituloPantalla(
-                                    pantallaActual
-                                )
+                                text = tituloDe(pantallaActual)
                             )
                         },
 
@@ -219,52 +177,44 @@ fun App() = KoinContext {
                                     contentDescription = "Abrir menú"
                                 )
                             }
-                        }
+                        },
+
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     )
                 }
 
             ) { paddingValues ->
 
-                when (pantallaActual) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
 
-                    Screen.Inicio -> {
+                    when (pantallaActual) {
 
-                        InicioScreen()
-                    }
+                        Screen.Inicio ->
+                            InicioScreen()
 
-                    Screen.Productos -> {
-
-                        Column(
-                            modifier = Modifier
-                                .padding(paddingValues)
-                        ) {
-
+                        Screen.Productos ->
                             ProductoScreen(
                                 viewModel = koinViewModel()
                             )
-                        }
-                    }
 
-                    Screen.Clientes -> {
-
-                        Column(
-                            modifier = Modifier
-                                .padding(paddingValues)
-                        ) {
-
+                        Screen.Clientes ->
                             ClienteScreen()
-                        }
-                    }
 
-                    Screen.Pedidos -> {
-
-                        Column(
-                            modifier = Modifier
-                                .padding(paddingValues)
-                        ) {
-
-                            Text("Pantalla de pedidos en construcción")
-                        }
+                        Screen.Pedidos ->
+                            EstadoVacio(
+                                icono = Icons.Default.ShoppingCart,
+                                titulo = "Pedidos en construcción",
+                                descripcion = "Este módulo llega en una próxima sesión del curso.",
+                                modifier = Modifier.align(Alignment.Center)
+                            )
                     }
                 }
             }
@@ -276,41 +226,85 @@ fun App() = KoinContext {
 @Composable
 private fun DrawerHeader() {
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(24.dp)
+            .padding(24.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        Text(
-            text = "PharmaMobil",
-            style = MaterialTheme.typography.headlineSmall
+        Surface(
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ) {
+
+            Icon(
+                imageVector = Icons.Default.LocalPharmacy,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(28.dp)
+            )
+        }
+
+        Column {
+
+            Text(
+                text = "PharmaMobil",
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Text(
+                text = "Gestión farmacéutica",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun ModoOscuro(
+    activo: Boolean,
+    onCambiar: (Boolean) -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 28.dp,
+                vertical = 16.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+
+        Icon(
+            imageVector = Icons.Default.DarkMode,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Text(
-            text = "Gestión farmacéutica",
-            style = MaterialTheme.typography.bodyMedium
+            text = "Modo oscuro",
+            modifier = Modifier.weight(1f)
+        )
+
+        Switch(
+            checked = activo,
+            onCheckedChange = onCambiar
         )
     }
 }
 
 
-private fun tituloPantalla(
+private fun tituloDe(
     screen: Screen
 ): String {
 
-    return when (screen) {
-
-        Screen.Inicio ->
-            "Inicio"
-
-        Screen.Productos ->
-            "Productos"
-
-        Screen.Clientes ->
-            "Clientes"
-
-        Screen.Pedidos ->
-            "Pedidos"
-    }
+    return DESTINOS.first { it.screen == screen }.titulo
 }
