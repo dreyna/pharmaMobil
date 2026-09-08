@@ -35,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import org.koin.compose.KoinContext
+import org.koin.compose.viewmodel.koinViewModel
 
 import pe.edu.upeu.pharmamobil.navigation.Screen
 import pe.edu.upeu.pharmamobil.presentation.cliente.ClienteScreen
@@ -43,7 +45,7 @@ import pe.edu.upeu.pharmamobil.presentation.producto.ProductoScreen
 import pe.edu.upeu.pharmamobil.theme.PharmaMobilTheme
 
 @Composable
-fun App() {
+fun App() = KoinContext {
     var pantallaActual by remember {
         mutableStateOf<Screen>(Screen.Inicio)
     }
@@ -237,7 +239,9 @@ fun App() {
                                 .padding(paddingValues)
                         ) {
 
-                            ProductoScreen()
+                            ProductoScreen(
+                                viewModel = koinViewModel()
+                            )
                         }
                     }
 
@@ -309,36 +313,4 @@ private fun tituloPantalla(
         Screen.Pedidos ->
             "Pedidos"
     }
-
-    /*
-    MaterialTheme {
-
-        val productoRepository = remember { ProductoRepository() }
-
-        var tabSeleccionado by rememberSaveable { mutableStateOf(0) }
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .safeContentPadding()
-        ) {
-
-            PrimaryTabRow(selectedTabIndex = tabSeleccionado) {
-                TITULOS.forEachIndexed { indice, titulo ->
-                    Tab(
-                        selected = tabSeleccionado == indice,
-                        onClick = { tabSeleccionado = indice },
-                        text = { Text(titulo) }
-                    )
-                }
-            }
-
-            when (tabSeleccionado) {
-                0 -> ClienteScreen()
-                else -> ProductoScreen(
-                    onRegistrar = { productoRepository.registrar(it) }
-                )
-            }
-        }
-    }*/
 }
